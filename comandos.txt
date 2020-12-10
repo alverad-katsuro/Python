@@ -1,0 +1,10 @@
+
+	### raiz quadrada
+import math
+math.srqt()
+lista.pop = apaga pelo indice
+lista.insert = insere
+lista.count
+lista.revese
+lista.remove=escrever
+lista.sort = ordena
