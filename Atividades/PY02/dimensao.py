@@ -1,5 +1,7 @@
 def dimensoes(matriz):
     linha = len(matriz)
-    coluna = len(matriz[0])
-    output = f"{linha}x{coluna}"
-    return output
+    try:
+        coluna = len(matriz[0])
+        print(f"{linha}x{coluna}")
+    except TypeError:
+        print(f"{linha}x{linha}")
