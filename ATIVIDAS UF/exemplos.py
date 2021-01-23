@@ -31,6 +31,12 @@ def dese_memodire(capacidade, largura_linhas, linhas):
     return (cap_bit-lin_bit-larg_lin_bit), lin_bit, larg_lin_bit, cap_bit
 
 
+def estru_memoasso():
+    cap = eval(input(("Digite a capacidade da MP: ")))
+    larg_block = eval(input("Digite a largura da memória: "))
+    return int(log(cap/larg_block, 2)), int(log(larg_block, 2))
+
+
 def conv_pot(pot):
     if pot < 11:
         if pot == 10:
@@ -101,11 +107,15 @@ def exemplo5_5():
     bit_bloco_linha = linhas * log(blocos,2)
     pot = log(cap_larg[2] + bit_bloco_linha, 2)
     pot_letra = conv_pot(pot)
-    print(f"A quantidade de bits necessários é {round(2 ** pot_letra[0],2)} {pot_letra[1]}")
+    print(f"A quantidade de bits necessários é {round(2 ** pot_letra[0],0)} {pot_letra[1]}")
 
 
 def exemplo5_6():
-
+    print("Cálculo do formato de endereço para memórias cache com mapa associativo completo.\nConsidere uma MP com 64MB de capacidade associdada a uma memória cache que possui 2K linhas, cada uma com largura de 16 bytes. Determine o formato do endereço para ser interpretado pelo sistema de controle da cache.")
+    t_blocos_pot_lar = estru_memoasso()
+    print("{:-^50}".format(str(t_blocos_pot_lar[0]+t_blocos_pot_lar[1]) + " bits"))
+    print("{}{: ^40}{}".format((t_blocos_pot_lar[0]), (""), (t_blocos_pot_lar[1])))
+    print("{:-^50}".format(''))
 
 
 def exemplo5_7():
@@ -117,4 +127,4 @@ def exemplo5_9():
 def exemplo5_10():
     pass
 
-exemplo5_1()
+exemplo5_6()
