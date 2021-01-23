@@ -89,8 +89,8 @@ def exemplo5_3():
 
 def exemplo5_4():
     print("Seja uma MP constituida de blocos com largura de 32 bytes, associada a uma cache com 128KB. Em dado instante o processador realiza um acesso, colocando o seguinte endereço 3FC92B6")
-    binario = f"{0x3FC92B6:28b}"
-    capacidade = eval(input("Digite a capacidade da MP: "))
+    binario = input("Digite o hexa")
+    capacidade = 2**(len(binario) * 4)
     largura_linhas = eval(input("Digite a largura da cache: "))
     linhas = eval(input("Digite a capacidade do cache: ")) / largura_linhas
     x = dese_memodire(capacidade, largura_linhas, linhas)
@@ -119,7 +119,17 @@ def exemplo5_6():
 
 
 def exemplo5_7():
-    pass
+    print("Seja uma MP constituída de blocos com largura de 32 bytes, associada a uma cache com 64KB. Em dado instante o processador realiza um acesso, colocando o seguinte endereço 3FC92B6. Determine qual deverá ser o valor binário do campo bloco que será localizado pelo sistema de controle de cache.")
+    hex = input("Digite o hexa")
+    binario = f'{int(hex, 16):28b}'
+    capacidade = len(hex)*4
+    largura = int(log(eval(input("Digite a largura: ")), 2))
+    print(binario)
+    print("{:-^50}".format(str(len(binario)) + " bits"))
+    print("{}{: ^20}{}".format((binario[:capacidade-largura]), (""), (binario[capacidade-largura:])))
+    print("{:-^50}".format(''))
+
+
 def exemplo5_8():
     pass
 def exemplo5_9():
@@ -127,4 +137,4 @@ def exemplo5_9():
 def exemplo5_10():
     pass
 
-exemplo5_6()
+exemplo5_7()
