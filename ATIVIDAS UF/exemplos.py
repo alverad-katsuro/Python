@@ -7,16 +7,14 @@ def ef_cache():
 
 
 def bit_dados():
-    cap = eval(input("Digite a capacidade: "))
-    byte = eval(input("Digite a quantidade de bytes: "))
+    cap = eval(input("Digite a capacidade da cache: "))
+    byte = eval(input("Digite a quantidade de bits: "))
     cap_larg = cap * byte
     print(f"O total de bits de dados é {cap_larg} e possui {cap_larg.bit_length()} bits em seu comprimento")
-    return cap_larg
+    return cap, byte, cap_larg
 
 
 def bit_tag(qt_blocos, qt_linhas):
-    qt_blocos = eval(input("Digite a quantidade de blocos da MP: "))
-    qt_linhas = eval(input("Digite a quantidade de linhas da MP: "))
     bits_tag = qt_blocos / qt_linhas
     print(f"A quantidade de bits na tag é {log(bits_tag,2)}")
     qt_bitsnas_linhas = qt_linhas * log(bits_tag,2)
@@ -68,10 +66,12 @@ def exemplo5_2():
     print("Cálculo da quantidade de bits necessários para uma determianda memória cache")
     print("Considere um sistema de computação com uma memória cache de 32KB de capacidade, constituida de linhas de linhas com 8 bytes de largura. A MP possui uma capacidade de 16MB.")
     cap_larg = bit_dados()
-    tag_bit = bit_tag()
-    pot = log(cap_larg+tag_bit,2)
+    blocos = eval(input("Digite a capacidade da MP: ")) / cap_larg[1]
+    linhas = cap_larg[0] / cap_larg[1]
+    tag_bit = bit_tag(blocos, linhas)
+    pot = log(cap_larg[2]+tag_bit,2)
     pot_letra = conv_pot(pot)
-    print(f"A quantidade de bits necessários é {2**pot_letra[0]} {pot_letra[1]}")
+    print(f"A quantidade de bits necessários é {round(2**pot_letra[0],0)} {pot_letra[1]}")
 
 def exemplo5_3():
     print("Calcule o formato de endereço para memórias cache com mapeamento direto")
@@ -86,7 +86,7 @@ def exemplo5_4():
     binario = f"{0x3FC92B6:28b}"
     capacidade = eval(input("Digite a capacidade da MP: "))
     largura_linhas = eval(input("Digite a largura da cache: "))
-    linhas = eval(input("Digite a quantidade de linhas da cache: "))
+    linhas = eval(input("Digite a capacidade do cache: ")) / largura_linhas
     x = dese_memodire(capacidade, largura_linhas, linhas)
     print("{:-^50}".format(str(x[3]) + " bits"))
     print("{}{: ^30}{}".format((binario[0:x[0]]), (binario[x[0]:x[0]+x[1]]), (binario[x[0]+x[1]:])))
@@ -94,9 +94,20 @@ def exemplo5_4():
 
 
 def exemplo5_5():
+    print("Cálculo da quantidade de bits necessária para uma determinada memória cache.\nConsidere um sistema de computação com uma memória cache de 32KB de capacidade, constituida de linhas com 8 bytes de largura. A MP possui uma capacidade de 16MB")
+    cap_larg = bit_dados()
+    linhas =  cap_larg[0] / cap_larg[1]
+    blocos = eval(input("Digite a capacidade da MP")) / cap_larg[1]
+    bit_bloco_linha = linhas * log(blocos,2)
+    pot = log(cap_larg[2] + bit_bloco_linha, 2)
+    pot_letra = conv_pot(pot)
+    print(f"A quantidade de bits necessários é {round(2 ** pot_letra[0],2)} {pot_letra[1]}")
+
 
 def exemplo5_6():
-    pass
+
+
+
 def exemplo5_7():
     pass
 def exemplo5_8():
@@ -106,4 +117,4 @@ def exemplo5_9():
 def exemplo5_10():
     pass
 
-exemplo5_4()
+exemplo5_1()
