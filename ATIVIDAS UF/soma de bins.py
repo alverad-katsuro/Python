@@ -37,8 +37,8 @@ def entrada():
 
 def inversor(bina1, bina2: list):
     inversa = []
-    while len(bina1)%4 != 0:
-        bina2.insert(0,"0")
+    while len(bina1) % 4 != 0:
+        bina2.insert(0, "0")
         if len(bina1) == len(bina2):
             break
     for i in range(len(bina2)):
@@ -69,7 +69,7 @@ def soma(bina1, bina2):
     if len(bina1) > len(bina2):
         k = len(bina1)-len(bina2)
         while k > 0:
-            bina2.insert(0,"0")
+            bina2.insert(0, "0")
             k -= 1
     else:
         k = len(bina2) - len(bina1)
@@ -77,7 +77,7 @@ def soma(bina1, bina2):
             bina1.insert(0, "0")
             k -= 1
     bina_resultado = ""
-    print(bina1,bina2)
+    print(bina1, bina2)
     for j in reversed(range(len(bina1))):
         if bina1[j] == bina2[j] == "1":
             if sobra == 1:
