@@ -131,10 +131,21 @@ def exemplo5_7():
 
 
 def exemplo5_8():
-    pass
+    print("Cálculo da quantidade de bits necessários para uma determinada memória cache, que funciona com mapeamento por conjunto de quatro.\nConsidere um sistema de computação com uma memória cache de 32KB de capacidade, constituída de linhas com 8 bytes de largura e conjunto de 4. A MP possui uma capacidade de 16MB")
+    cap_larg = bit_dados()
+    linhas =  cap_larg[0] / cap_larg[1]
+    blocos = eval(input("Digite a capacidade da MP")) / cap_larg[1]
+    qt_blocos = eval(input("Digite a quantidade de conjuntos da memória: "))
+    quant_bitconju = linhas / qt_blocos
+    tamanho_tag = blocos / quant_bitconju * qt_blocos
+    pot = log(cap_larg[2] + tamanho_tag, 2)
+    pot_letra = conv_pot(pot)
+    print(f"A quantidade de bits necessários é {round(2 ** pot_letra[0],0)} {pot_letra[1]}")
+
+
 def exemplo5_9():
     pass
 def exemplo5_10():
     pass
 
-exemplo5_7()
+exemplo5_8()
