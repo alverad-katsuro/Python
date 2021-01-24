@@ -8,9 +8,8 @@ def ef_cache():
 
 def bit_dados():
     cap = eval(input("Digite a capacidade da cache: "))
-    byte = eval(input("Digite a quantidade de bits: "))
+    byte = eval(input("Digite a quantidade de bits ou byte: "))
     cap_larg = cap * byte
-    print(f"O total de bits de dados é {cap_larg} e possui {cap_larg.bit_length()} bits em seu comprimento")
     return cap, byte, cap_larg
 
 
@@ -133,7 +132,7 @@ def exemplo5_7():
 def exemplo5_8():
     print("Cálculo da quantidade de bits necessários para uma determinada memória cache, que funciona com mapeamento por conjunto de quatro.\nConsidere um sistema de computação com uma memória cache de 32KB de capacidade, constituída de linhas com 8 bytes de largura e conjunto de 4. A MP possui uma capacidade de 16MB")
     cap_larg = bit_dados()
-    linhas =  cap_larg[0] / cap_larg[1]
+    linhas = cap_larg[0] / cap_larg[1]
     blocos = eval(input("Digite a capacidade da MP")) / cap_larg[1]
     qt_blocos = eval(input("Digite a quantidade de conjuntos da memória: "))
     quant_bitconju = linhas / qt_blocos
@@ -144,8 +143,18 @@ def exemplo5_8():
 
 
 def exemplo5_9():
-    pass
+    print("Cálculo de formato de endereço para memória cache com mapeamento associativo por conjunto.\n Considere uma MP com 64MB de capacidade associada a uma memória cache que funciona com mapeamento associativo por conjunto de 4 e que possui 32KB, com linhas de largura de 16 bytes. Determine o formato do endereço para ser imterpretado pelo sistema de controle da cache.")
+    cap_larg = bit_dados()
+    linhas = cap_larg[0] / cap_larg[1] #cache / byte
+    blocos = eval(input("Digite a capacidade da MP")) / cap_larg[1] #byte
+    qt_conju = eval(input("Digite a quantidade de conjuntos da memória: "))
+    quant_bitconju = int(linhas / qt_conju)
+    tamanho_tag = int(blocos / quant_bitconju)
+    print("{:-^50}".format(str(int(log(blocos,2)+qt_conju)) + " bits"))
+    print("{}{: ^40}{}".format((log(tamanho_tag,2)), (log(quant_bitconju,2)), (int(log(cap_larg[1],2)))))
+    print("{:-^50}".format(''))
+
 def exemplo5_10():
     pass
 
-exemplo5_8()
+exemplo5_9()
