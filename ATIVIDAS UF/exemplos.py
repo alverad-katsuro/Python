@@ -137,7 +137,7 @@ def exemplo5_7():
     print("Em dado instante o processador realiza um acesso, colocando o seguinte endereço 3FC92B6.")
     print("Qual deverá ser o valor binário do campo bloco que será localizado pelo sistema de controle de cache.")
     hexa = input("Digite o hexa")
-    binario = f'{int(hexa, 16):28b}'
+    binario = f'{int(hexa, 16):028b}'
     capacidade = len(hexa) * 4
     largura = int(log(eval(input("Digite a largura: ")), 2))
     print(binario)
@@ -183,15 +183,13 @@ def exemplo5_10():
     cap_larg = bit_dados()
     linhas = cap_larg[0] / cap_larg[1]
     hexa = input("Digite o hexa")
-    binario = f'{int(hexa, 16):28b}'
+    binario = f'{int(hexa, 16):028b}'
     capacidade = len(hexa) * 4
     qt_conjun = eval(input("Digite a quantidade de conjuntos: "))
-    bit_conju = log(linhas / qt_conjun, 2)
+    bit_conju = int(log(linhas / qt_conjun, 2))
     largura = int(log(cap_larg[1], 2))
-    print(binario)
+    print(log(linhas,2))
+    print(capacidade, bit_conju, largura)
     print("{:-^50}".format(str(len(binario)) + " bits"))
-    print("{}{: ^20}{}".format(binario[:(capacidade-largura-bit_conju)], binario[(capacidade-largura-bit_conju):(capacidade-largura)], binario[(capacidade-largura):]))
+    print("{}{: ^30}{}".format(binario[:(capacidade-largura-bit_conju)], binario[(capacidade-largura-bit_conju):(capacidade-largura)], binario[(capacidade-largura):capacidade]))
     print("{:-^50}".format(''))
-
-
-exemplo5_10()
