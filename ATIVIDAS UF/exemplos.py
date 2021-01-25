@@ -66,16 +66,17 @@ def conv_pot(pot):
 def exemplo5_1():
     print("Exemplo 5.1")
     print("Um determinado sistema de computação possui uma memória cache, MP e processador.")
-    print("Em operações normais, obtêm-se 96 acertos para cada 100 acessos do processador às memórias.")
+    print("Em operações normais, obtêm-se 96 acertos para cada 100 acessos do processador às memórias.", end=" ")
     print("Qual deve ser a eficiência do sistema cache/MP")
     e = ef_cache()
     print(f"A eficiencia é {e * 100}%")
 
 
 def exemplo5_2():
+    print("Exemplo 5.2")
     print("Cálculo da quantidade de bits necessários para uma determianda memória cache")
-    print("Considere um sistema de computação com uma memória cache de 32KB de capacidade.")
-    print("constituida de linhas de linhas com 8 bytes de largura.")
+    print("Considere um sistema de computação com uma memória cache de 32KB de capacidade,", end=" ")
+    print("constituida de linhas de linhas com 8 bytes de largura.", end=" ")
     print("A MP possui uma capacidade de 16MB.")
     cap_larg = bit_dados()
     blocos = eval(input("Digite a capacidade da MP: ")) / cap_larg[1]
@@ -87,8 +88,9 @@ def exemplo5_2():
 
 
 def exemplo5_3():
-    print("Calcule o formato de endereço para memórias cache com mapeamento direto")
-    print("Uma MP com 64MB de capacidade associada a uma memória cache de 2K linhas, cada uma com largura de 16 bytes.")
+    print("Exemplo 5.3")
+    print("Calcule o formato de endereço para memórias cache com mapeamento direto.")
+    print("Uma MP com 64MB de capacidade associada a uma memória cache de 2K linhas, cada uma com largura de 16 bytes.", end=" ")
     print("Determine o formato do endereço para ser interpretado pelo sistema de controle da cache.")
     capacidade = eval(input("Digite a capacidade da MP: "))
     largura_linhas = eval(input("Digite a largura da cache: "))
@@ -97,7 +99,8 @@ def exemplo5_3():
 
 
 def exemplo5_4():
-    print("Seja uma MP constituida de blocos com largura de 32 bytes, associada a uma cache com 128KB.")
+    print("Exemplo 5.4")
+    print("Seja uma MP constituida de blocos com largura de 32 bytes, associada a uma cache com 128KB.", end=' ')
     print("Em dado instante o processador realiza um acesso, colocando o seguinte endereço 3FC92B6")
     binario = input("Digite o hexa")
     capacidade = 2 ** (len(binario) * 4)
@@ -110,9 +113,11 @@ def exemplo5_4():
 
 
 def exemplo5_5():
+    print("Exemplo 5.5")
     print("Cálculo da quantidade de bits necessária para uma determinada memória cache.")
-    print("Considere um sistema de computação com uma memória cache de 32KB de capacidade, constituida de linhas com 8 bytes de largura.")
-    print(" A MP possui uma capacidade de 16MB")
+    print("Considere um sistema de computação com uma memória cache de 32KB de capacidade,", end=" ")
+    print("constituida de linhas com 8 bytes de largura.", end=" ")
+    print("A MP possui uma capacidade de 16MB")
     cap_larg = bit_dados()
     linhas = cap_larg[0] / cap_larg[1]
     blocos = eval(input("Digite a capacidade da MP")) / cap_larg[1]
@@ -123,8 +128,10 @@ def exemplo5_5():
 
 
 def exemplo5_6():
+    print("Exemplo 5.6")
     print("Cálculo do formato de endereço para memórias cache com mapa associativo completo.")
-    print("Considere uma MP com 64MB de capacidade associdada a uma memória cache que possui 2K linhas, cada uma com largura de 16 bytes. ")
+    print("Considere uma MP com 64MB de capacidade associdada a uma memória cache que possui 2K linhas,", end='')
+    print(" cada uma com largura de 16 bytes. ", end="")
     print("Determine o formato do endereço para ser interpretado pelo sistema de controle da cache.")
     t_blocos_pot_lar = estru_memoasso()
     print("{:-^50}".format(str(t_blocos_pot_lar[0] + t_blocos_pot_lar[1]) + " bits"))
@@ -133,6 +140,7 @@ def exemplo5_6():
 
 
 def exemplo5_7():
+    print("Exemplo 5.7")
     print("Seja uma MP constituída de blocos com largura de 32 bytes, associada a uma cache com 64KB.")
     print("Em dado instante o processador realiza um acesso, colocando o seguinte endereço 3FC92B6.")
     print("Qual deverá ser o valor binário do campo bloco que será localizado pelo sistema de controle de cache.")
@@ -147,8 +155,11 @@ def exemplo5_7():
 
 
 def exemplo5_8():
-    print("Cálculo da quantidade de bits necessários para uma determinada memória cache, que funciona com mapeamento por conjunto de quatro.")
-    print("Considere um sistema de computação com uma memória cache de 32KB de capacidade, constituída de linhas com 8 bytes de largura e conjunto de 4. A MP possui uma capacidade de 16MB")
+    print("Exemplo 5.8")
+    print("Cálculo da quantidade de bits necessários para uma determinada memória cache,", end='')
+    print("que funciona com mapeamento por conjunto de quatro.")
+    print("Considere um sistema de computação com uma memória cache de 32KB de capacidade,", end='')
+    print(" constituída de linhas com 8 bytes de largura e conjunto de 4. A MP possui uma capacidade de 16MB")
     cap_larg = bit_dados()
     linhas = cap_larg[0] / cap_larg[1]
     blocos = eval(input("Digite a capacidade da MP")) / cap_larg[1]
@@ -161,8 +172,10 @@ def exemplo5_8():
 
 
 def exemplo5_9():
+    print("Exemplo 5.9")
     print("Cálculo de formato de endereço para memória cache com mapeamento associativo por conjunto.")
-    print("Considere uma MP com 64MB de capacidade associada a uma memória cache que funciona com mapeamento associativo por conjunto de 4 e que possui 32KB, com linhas de largura de 16 bytes. ")
+    print("Considere uma MP com 64MB de capacidade associada a uma memória cache que funciona com ", end='')
+    print("mapeamento associativo por conjunto de 4 e que possui 32KB, com linhas de largura de 16 bytes. ")
     print("Determine o formato do endereço para ser imterpretado pelo sistema de controle da cache.")
     cap_larg = bit_dados()
     linhas = cap_larg[0] / cap_larg[1]  # cache / byte
@@ -176,9 +189,10 @@ def exemplo5_9():
 
 
 def exemplo5_10():
-    print("Seja uma MP constituida de blocos com largura de 32 bytes, associada a uma cache com 64KB.")
-    print("A cache usa mapeamento por conjunto de 4.")
-    print("Em dado instante o processador realiza um acesso, ao seguinte endereço: 3FC92B6")
+    print("Exemplo 5.10")
+    print("Seja uma MP constituida de blocos com largura de 32 bytes, associada a uma cache com 64KB.", end=" ")
+    print("A cache usa mapeamento por conjunto de 4.", end=" ")
+    print("Em dado instante o processador realiza um acesso, ao seguinte endereço: 3FC92B6", end=" ")
     print("Determine o conjunto binario a ser localizado pelo sistema de controle da cache.")
     cap_larg = bit_dados()
     linhas = cap_larg[0] / cap_larg[1]
@@ -188,8 +202,7 @@ def exemplo5_10():
     qt_conjun = eval(input("Digite a quantidade de conjuntos: "))
     bit_conju = int(log(linhas / qt_conjun, 2))
     largura = int(log(cap_larg[1], 2))
-    print(log(linhas,2))
-    print(capacidade, bit_conju, largura)
+    tg = capacidade-largura-bit_conju
     print("{:-^50}".format(str(len(binario)) + " bits"))
-    print("{}{: ^30}{}".format(binario[:(capacidade-largura-bit_conju)], binario[(capacidade-largura-bit_conju):(capacidade-largura)], binario[(capacidade-largura):capacidade]))
+    print("{}{: ^30}{}".format(binario[:tg], binario[tg:(capacidade-largura)], binario[capacidade-largura:capacidade]))
     print("{:-^50}".format(''))
