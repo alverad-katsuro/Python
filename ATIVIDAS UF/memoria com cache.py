@@ -52,13 +52,13 @@ def memo_cache():
 def ler_tudo():
     print("{:-^30}".format("Memória Principal"))
     for k in range(len(memoria)):
-        print(f"Endereço {k:04b} valor {memoria[k]:08b}")
+        print(f"\033[35mEndereço {k:04b} valor {memoria[k]:08b}")
     print("{:-^30}".format("Memória Cache"))
     for keys in memoria_cache.keys():
         bina = f'{keys:04b}'
         tag = bina[:3]
         conj = bina[3:4]
-        print(f"Tag: {tag} Conjunto: {conj} Valor: {memoria_cache[keys]:08b}")
+        print(f"\033[33mTag: {tag} Conjunto: {conj} Valor: {memoria_cache[keys]:08b}")
     sleep(5)
 
 
