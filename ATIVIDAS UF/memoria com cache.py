@@ -34,6 +34,7 @@ def escrita():
             tag = int(b_end[0:2], 2)
             conj = int(b_end[2], 2)
             dado = int(b_end[3], 2)
+            memoria[endereco] = -1
             if tag not in memoria_cache[conj]:
                 del(memoria_cache[conj][choice(list(memoria_cache[conj].keys()))])
                 memoria_cache[conj].update({tag: {}})
