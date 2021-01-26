@@ -102,8 +102,9 @@ def exemplo5_4():
     print("Exemplo 5.4")
     print("Seja uma MP constituida de blocos com largura de 32 bytes, associada a uma cache com 128KB.", end=' ')
     print("Em dado instante o processador realiza um acesso, colocando o seguinte endereço 3FC92B6")
-    binario = input("Digite o hexa")
-    capacidade = 2 ** (len(binario) * 4)
+    hexa = input("Digite o hexa")
+    binario = f'{int(hexa, 16):028b}'
+    capacidade = 2 ** (len(hexa) * 4)
     largura_linhas = eval(input("Digite a largura da cache: "))
     linhas = eval(input("Digite a capacidade do cache: ")) / largura_linhas
     x = dese_memodire(capacidade, largura_linhas, linhas)
