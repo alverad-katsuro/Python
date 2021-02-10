@@ -61,12 +61,12 @@ def memo_cache():
                 if escolha >> 2 not in memoria_cache[0] and len(memoria_cache[0]) < 2:
                     memoria_cache[0].update({escolha >> 2: {}})
                     memoria_cache[0][escolha >> 2].update({1: memoria[escolha+1]})
-                    memoria_cache[0][escolha >> 2].update({0: memoria[escolha+1]})
+                    memoria_cache[0][escolha >> 2].update({0: memoria[escolha})
             elif escolha in range(2, len(memoria), 4) and len(memoria_cache[1]) < 2:
                 if escolha not in memoria_cache[1]:
                     memoria_cache[1].update({escolha >> 2: {}})
                     memoria_cache[1][escolha >> 2].update({1: memoria[escolha + 1]})
-                    memoria_cache[1][escolha >> 2].update({0: memoria[escolha + 1]})
+                    memoria_cache[1][escolha >> 2].update({0: memoria[escolha]})
     if len(memoria_cache[0]) < 2 or len(memoria_cache[1]) < 2:
         memo_cache()
 
