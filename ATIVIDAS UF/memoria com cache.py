@@ -1,71 +1,78 @@
 from random import choice, sample, randint
 from math import log
 
+
 class Process:
     def __init__(self, memo_cache_object):
         self.processador = False
         self.ci = 0
         self.r0 = 0
         self.ri = 0
-        self.rem_soma = None
-        self.rem_sub = None
         self.rem = None
-        self.rdm = None
+        self.rdm = 0
+        self.rdm_s = 0
         self.cache = memo_cache_object
 
     def instrucoes(self):
         self.processador = True
-        while self.ci != -1:
-            print(self.ci)
+        while 11 > self.ci != -1:
             self.rem = self.ci
-            self.rdm = self.ler()
-            self.ri = self.rdm[0]
+            self.ler()
+            self.rem = int(f'{self.rdm:016b}'[8:16], 2)
+            self.ri = int(f'{self.rdm:016b}'[0:8], 2)
+            self.rdm_s = ["Dado 0:", self.ri, "Dado 1:", int(f'{self.rdm:016b}'[8:16], 2)]
             if self.ri == 0:  # Break
                 self.ci = -1
                 self.processador = False
-                break
             elif self.ri == 1:  # Load
-                self.rem = self.rdm[1]
-                self.rdm = self.ler()
-                self.r0 = int(f'{self.rdm[0]:08b}' + f'{self.rdm[1]:08b}', 2)
-                print(self.r0)
+                self.ler()
+                self.r0 = self.rdm
                 self.ci += 2
             elif self.ri == 2:  # STORE?
                 self.ci += 2
-                k = [int(f'{self.r0:016b}'[0:8], 2), int(f'{self.r0:016b}'[8:16], 2)]
-                pass
+                # k = [int(f'{self.r0:016b}'[0:8], 2), int(f'{self.r0:016b}'[8:16], 2)] #sla pra q
             elif self.ri == 3:  # Soma
-                self.rem = self.rdm[1]
-                self.rdm = Process.ler(self)
-                self.r0 = self.r0 + int(f'{self.rdm[0]:08b}' + f'{self.rdm[1]:08b}', 2)
+                self.ler()
+                self.r0 = self.r0 + self.rdm
                 self.ci += 2
             elif self.ri == 4:  # Subtracao
-                self.rem = self.rdm[1]
-                self.rdm = self.ler()
-                self.r0 = self.r0 - int((f'{self.rdm[0]:08b}' + f'{self.rdm[1]:08b}'), 2)
+                self.ler()
+                self.r0 = self.r0 - self.rdm
                 self.ci += 2
-                print(self.r0)
             elif self.ri == 5:  # JZ
                 if self.r0 == 0:
-                    self.ci = self.rdm[1]
+                    self.ci = int(f'{self.rdm:016b}'[8:16], 2)
+                else:
+                    self.ci += 2
             elif self.ri == 6:  # JP
                 if self.r0 > 0:
-                    self.ci = self.rdm[1]
+                    self.ci = int(f'{self.rdm:016b}'[8:16], 2)
+                else:
+                    self.ci += 2
             elif self.ri == 7:  # JN
                 if self.r0 < 0:
-                    self.ci = self.rdm[1]
+                    self.ci = int(f'{self.rdm:016b}'[8:16], 2)
+                else:
+                    self.ci += 2
             elif self.ri == 8:  # JUMP
-                self.ci = self.rdm[1]
+                self.ci = int(f'{self.rdm:016b}'[8:16], 2)
             elif self.ri == 9:  # GET
                 self.ci += 2
-                pass
+                self.rdm = int(input("Digite um binario de 16 bits"), 2)
             elif self.ri == 10:  # PRINT
                 self.memo_cache_escrita()
                 self.ci += 2
-                pass
             else:
                 print("Algo deu erro")
-                break
+                self.ci = -1
+            print("R0 atual:", self.r0)
+            print("REM atual:", self.rem)
+            print("RDM atual:", self.rdm)
+            print("RI atual:", self.ri)
+            print("CI atual:", self.ci)
+
+    def ula(self):
+        pass
 
     def validacao(self):
         endereco = input(f"Digite o endereço de {self.cache.ram.tamanho_linhas} bits: ")
@@ -78,13 +85,11 @@ class Process:
 
     def mani_dados(self, endereco):
         if type(endereco) == int:
-            endereco = f"{endereco:0b}".zfill(self.cache.ram.tamanho_linhas)
-        conj_t = int(log(self.cache.conjuntos, 2))
-        tag_t = self.cache.tag_bit
-        conj = int(endereco[-conj_t:], 2)
-        tag = int(endereco[:tag_t], 2)
-        dado = int(endereco[tag_t:-conj_t], 2)
-        return conj_t, tag_t, conj, tag, dado
+            endereco = f'{endereco:0b}'.zfill(self.cache.ram.tamanho_linhas)
+        conj = int(endereco[-(self.cache.bit_conjuntos + self.cache.bit_dados):-self.cache.bit_dados], 2)
+        tag = int(endereco[:self.cache.tag_bit], 2)
+        dado = int(endereco[-self.cache.bit_dados:], 2)
+        return conj, tag, dado
 
     def ler_tudo(self):
         cel = self.cache.ram.tamanho_celula
@@ -108,65 +113,72 @@ class Process:
             endereco = input(f"Digite o endereço de {self.cache.ram.tamanho_linhas} bits: ")
             while len(str(endereco)) != self.cache.ram.tamanho_linhas:
                 endereco = input(f"Digite o endereço de {self.cache.ram.tamanho_linhas} bits: ")
-            conj_t, tag_t, conj, tag, dado = Process.mani_dados(self, endereco)
+            conj, tag, dado = self.mani_dados(endereco)
             if conj in self.cache.memo_cache and tag in self.cache.memo_cache[conj] \
                     and dado in self.cache.memo_cache[conj][tag]:
                 print("\033[33mO dado está na MC")
-                print("Tag: {} Conjunto: {} Dado {}: {}".format(f'{tag:0b}'.zfill(tag_t),
-                                                                f'{conj:0b}'.zfill(conj_t),
-                                                                f'{dado:0b}'.zfill(len(endereco[tag_t:-conj_t])),
+                print("Tag: {} Conjunto: {} Dado {}: {}".format(f'{tag:0b}'.zfill(self.cache.tag_bit),
+                                                                f'{conj:0b}'.zfill(self.cache.bit_conjuntos),
+                                                                f'{dado:0b}'.zfill(len(endereco[self.cache.tag_bit:-self
+                                                                                       .cache.bit_conjuntos])),
                                                                 f'{self.cache.memo_cache[conj][tag][dado]:0b}'.
                                                                 zfill(self.cache.ram.tamanho_celula)))
-                return None
             else:
                 print("\033[35mO dado está na MP")
                 print("Endereço: {} Dado: {}".format(endereco, f'{self.cache.ram.memo_ram[int(endereco, 2)]:0b}'
                                                      .zfill(self.cache.ram.tamanho_celula)))
         else:
-            endereco = '{}'.format(f'{self.rem:0b}'.zfill(self.cache.ram.tamanho_linhas))
-            conj_t, tag_t, conj, tag, dado = Process.mani_dados(self, endereco)
+            endereco = f'{self.rem:0b}'.zfill(self.cache.ram.tamanho_linhas)
+            conj, tag, dado = self.mani_dados(endereco)
             if conj in self.cache.memo_cache and tag in self.cache.memo_cache[conj] \
                     and dado in self.cache.memo_cache[conj][tag]:
-                return self.cache.memo_cache[conj][tag][0], self.cache.memo_cache[conj][tag][1]
+                rdm = int((f'{self.cache.memo_cache[conj][tag][0]:08b}'
+                          + f'{self.cache.memo_cache[conj][tag][1]:08b}'), 2)
+                self.rdm = rdm
             else:
-                return Process.memo_cache_escrita(self)
+                self.memo_cache_escrita()
 
     def inscricao(self, endereco, conj, tag, dado, celula=0):
+        if type(endereco) == int:
+            endereco = f'{endereco:0b}'.zfill(self.cache.ram.tamanho_linhas)
         if tag not in self.cache.memo_cache[conj]:
             escolha = choice(list(self.cache.memo_cache[conj].keys()))
             del (self.cache.memo_cache[conj][escolha])
             self.cache.memo_cache[conj].update({tag: {}})
-            endereco = int(endereco, 2) >> int(log(self.cache.dados, 2))
-            endereco = endereco << int(log(self.cache.dados, 2))
+            endereco = int(endereco, 2) >> self.cache.bit_dados
+            endereco = endereco << self.cache.bit_dados
+            endereco = endereco >> self.cache.bit_dados
+            endereco = endereco + (self.cache.dados - 1)
             for k in reversed(range(self.cache.dados)):
                 self.cache.memo_cache[conj][tag].update({k: self.cache.ram.memo_ram[endereco]})
-                endereco += 1
+                endereco -= 1
             if not self.processador:
                 self.cache.memo_cache[conj][tag][dado] = celula
 
     def memo_cache_escrita(self):
         if not self.processador:
-            endereco, celula = Process.validacao(self)
+            endereco, celula = self.validacao()
             assert isinstance(celula, int)
-            conj_t, tag_t, conj, tag, dado = Process.mani_dados(self, endereco)
-            Process.inscricao(self, endereco, conj, tag, dado, celula)
+            conj, tag, dado = self.mani_dados(endereco)
+            self.inscricao(endereco, conj, tag, dado, celula)
         else:
             if self.ri == 10:
                 p = 0
                 k = [int(f'{self.r0:016b}'[0:8], 2), int(f'{self.r0:016b}'[8:16], 2)]
                 for j in k:
-                    conj_t, tag_t, conj, tag, dado = Process.mani_dados(self, self.rem + p)
-                    Process.inscricao(self, self.rem_soma, conj, tag, dado, j)
+                    conj, tag, dado = self.mani_dados(self.rem + p)
+                    self.inscricao(self.rem, conj, tag, dado, j)
                     p += 1
+
             else:
-                conj_t, tag_t, conj, tag, dado = Process.mani_dados(self, f'{self.rem:0b}'
-                                                                    .zfill(self.cache.ram.tamanho_linhas))
-                Process.inscricao(self, f'{self.rem:0b}'.zfill(self.cache.ram.tamanho_linhas),
-                                  conj, tag, dado)
+                conj, tag, dado = self.mani_dados(f'{self.rem:0b}'
+                                                  .zfill(self.cache.ram.tamanho_linhas))
+                self.inscricao(self.rem, conj, tag, dado)
                 n = []
-                for d in reversed(range(self.cache.dados)):
+                for d in range(self.cache.dados):
                     n.append(self.cache.memo_cache[conj][tag][d])
-                return n
+                self.rdm = int(f'{n[0]:08b}' + f'{n[1]:08b}', 2)
+
 
 class Ram:
     def __init__(self, bit_linhas=5, tamanho_celula=8, memo_ram=None):
@@ -193,7 +205,7 @@ class Ram:
                                                          f'{self.memo_ram[endere]:0b}'.zfill(self.tamanho_celula)))
         else:
             print("\033[31mDigite um endereço valido")
-            Ram.leitura(self)
+            self.leitura()
 
     def escrita_ram(self, endereco=0):
         while len(str(endereco)) < self.tamanho_linhas:
@@ -243,8 +255,8 @@ class Cache:
 
 def situacao(u):
     if u == 1:
-        memoria = {0: 1, 1: 14, 2: 4, 3: 16, 4: 7, 5: 5, 6: 10, 7: 16, 8: 8, 9: 6,
-                   10: 10, 11: 14, 12: 0, 13: 0, 14: 2, 15: 179, 16: 10, 17: 163}
+        memoria = {0: 1, 1: 14, 2: 4, 3: 16, 4: 7, 5: 10, 6: 10, 7: 16, 8: 8, 9: 12,
+                   10: 10, 11: 14, 12: 0, 13: 0, 14: 2, 15: 179, 16: 1, 17: 163}
         ram = Ram(0, 0, memoria)
         cache = Cache(ram)
         cpu = Process(cache)
@@ -266,12 +278,12 @@ def situacao(u):
 def control(cpu):
     v = 0
     while v == 0:
-        #controle = input("\n\033[34mDigite:\nW - Write\nR - READER"
-        #                 "\nL - READ ALL\nP para executar instruções\n"
-         #                "V para voltar\nQualquer tecla para acessar o console\n")
-        controle = "p"
+        controle = input("\n\033[34mDigite:\nW - Write\nR - READER"
+                         "\nL - READ ALL\nP para executar instruções\n"
+                         "V para voltar\nQualquer tecla para acessar o console\n")
+        #controle = "p"
         if (controle == "W") or (controle == "w"):
-            cpu.ram.escrita_ram()
+            cpu.memo_cache_escrita()
         elif (controle == "R") or (controle == "r"):
             cpu.ler()
         elif (controle == "L") or (controle == "l"):
@@ -283,9 +295,12 @@ def control(cpu):
         else:
             pass
 
+def start():
+    menu = "w"
+    while menu in "WwRrLlPpVv":
+        # b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Aleatorio\n")
+        b = '1'
+        situacao(int(b))
 
-menu = "w"
-while menu in "WwRrLlPpVv":
-    #b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Aleatorio\n")
-    b = '1'
-    situacao(int(b))
+
+start()
