@@ -266,14 +266,14 @@ class Cache:
 
 
 def situacao(u):
-    if u == 1:
+    if u == '1':
         memoria = {0: 1, 1: 14, 2: 4, 3: 16, 4: 7, 5: 10, 6: 10, 7: 14, 8: 8, 9: 12,
                    10: 10, 11: 14, 12: 0, 13: 0, 14: 2, 15: 179, 16: 1, 17: 163}
         ram = Ram(0, 0, memoria)
         cache = Cache(ram)
         cpu = Process(cache)
         control(cpu)
-    elif u == 2:
+    elif u == '2':
         memoria = {0: 10, 1: 18, 2: 1, 3: 18, 4: 4, 5: 16, 6: 2, 7: 18, 8: 10, 9: 18,
                    10: 5, 11: 14, 12: 8, 13: 4, 14: 0, 15: 0, 16: 0, 17: 1, 18: 0, 19: 10}
         ram = Ram(0, 0, memoria)
@@ -281,11 +281,13 @@ def situacao(u):
         cpu = Process(cache)
         cpu.ci = 2
         control(cpu)
-    else:
+    elif u == '3':
         ram = Ram()
         cache = Cache(ram)
         cpu = Process(cache)
         control(cpu)
+    else:
+        return "c"
 
 
 def control(cpu):
@@ -295,7 +297,7 @@ def control(cpu):
     while v == 0:
         controle = input("\n\033[34mDigite:\nW - Write\nR - READER"
                          "\nL - READ ALL\nP para executar instruções\n"
-                         "V para voltar\nQualquer tecla para acessar o console\n")
+                         "V para voltar\n")
         if (controle == "W") or (controle == "w"):
             cpu.memo_cache_escrita()
         elif (controle == "R") or (controle == "r"):
@@ -307,15 +309,14 @@ def control(cpu):
                 print(f'Dado: {10:016b}')
             cpu.instrucoes()
         elif (controle == "V") or (controle == "v"):
-            v = 1
-        else:
-            pass
+            start()
+
 
 def start():
     menu = "w"
     while menu in "WwRrLlPpVv":
-        b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Aleatorio\n")
-        situacao(int(b))
+        b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Aleatorio\nQualquer coisa para acessar o console\n")
+        menu = situacao(b)
 
 
 start()
