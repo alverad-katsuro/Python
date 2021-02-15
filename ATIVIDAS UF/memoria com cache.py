@@ -29,8 +29,8 @@ class Process:
                 self.r0 = self.rdm
                 self.ci += 2
             elif self.ri == 2:  # STORE?
+                self.memo_cache_escrita()
                 self.ci += 2
-                # k = [int(f'{self.r0:016b}'[0:8], 2), int(f'{self.r0:016b}'[8:16], 2)] #sla pra q
             elif self.ri == 3:  # Soma
                 self.ler()
                 self.r0 = self.r0 + self.rdm
@@ -60,7 +60,10 @@ class Process:
                 self.ci += 2
                 self.rdm = int(input("Digite um binario de 16 bits"), 2)
             elif self.ri == 10:  # PRINT
-                self.memo_cache_escrita()
+                self.ler()
+                conj, tag, dado = self.mani_dados(self.rem)
+                print(f'Dado: {self.cache.memo_cache[conj][tag][0]:08b}' +
+                      f'{self.cache.memo_cache[conj][tag][1]:08b}')
                 self.ci += 2
             else:
                 print("Algo deu erro")
@@ -146,10 +149,10 @@ class Process:
             self.load_ram_cache(endereco, conj, tag)
             self.cache.memo_cache[conj][tag][dado] = celula
             self.cache.ram.memo_ram[endereco_att_ram] = celula
-        elif tag in self.cache.memo_cache[conj] and self.processador and self.ri == 10:
+        elif tag in self.cache.memo_cache[conj] and self.processador and self.ri == 2:
             self.cache.memo_cache[conj][tag][dado] = celula
             self.cache.ram.memo_ram[endereco_att_ram] = celula
-        elif tag not in self.cache.memo_cache[conj] and self.processador and self.ri == 10:
+        elif tag not in self.cache.memo_cache[conj] and self.processador and self.ri == 2:
             self.load_ram_cache(endereco, conj, tag)
             self.cache.memo_cache[conj][tag][dado] = celula
             self.cache.ram.memo_ram[endereco_att_ram] = celula
@@ -174,14 +177,13 @@ class Process:
             conj, tag, dado = self.mani_dados(endereco)
             self.inscricao(endereco, conj, tag, dado, celula)
         else:
-            if self.ri == 10:
+            if self.ri == 2:
                 p = 0
                 celula = [int(f'{self.r0:016b}'[0:8], 2), int(f'{self.r0:016b}'[8:16], 2)]
                 for c in celula:
                     conj, tag, dado = self.mani_dados(self.rem + p)
                     self.inscricao(self.rem + p, conj, tag, dado, c)
                     p += 1
-                print("Dado:", f'{celula[0]:08b}' + f'{celula[1]:08b}')
             else:
                 conj, tag, dado = self.mani_dados(f'{self.rem:0b}'
                                                   .zfill(self.cache.ram.tamanho_linhas))
@@ -274,27 +276,34 @@ def situacao(u):
         cpu = Process(cache)
         control(cpu)
     elif u == '2':
+        memoria = {0: 1, 1: 14, 2: 4, 3: 16, 4: 6, 5: 10, 6: 10, 7: 16, 8: 8, 9: 12,
+                   10: 10, 11: 14, 12: 0, 13: 0, 14: 2, 15: 179, 16: 1, 17: 163}
+        ram = Ram(0, 0, memoria)
+        cache = Cache(ram)
+        cpu = Process(cache)
+        control(cpu)
+    elif u == '3':
         memoria = {0: 10, 1: 18, 2: 1, 3: 18, 4: 4, 5: 16, 6: 2, 7: 18, 8: 10, 9: 18,
                    10: 5, 11: 14, 12: 8, 13: 4, 14: 0, 15: 0, 16: 0, 17: 1, 18: 0, 19: 10}
         ram = Ram(0, 0, memoria)
         cache = Cache(ram)
         cpu = Process(cache)
-        cpu.ci = 2
         control(cpu)
-    elif u == '3':
+    elif u == '4':
         ram = Ram()
         cache = Cache(ram)
         cpu = Process(cache)
         control(cpu)
     else:
-        return "c"
+        pass
 
 
 def control(cpu):
     memoria = {0: 10, 1: 18, 2: 1, 3: 18, 4: 4, 5: 16, 6: 2, 7: 18, 8: 10, 9: 18,
                10: 5, 11: 14, 12: 8, 13: 4, 14: 0, 15: 0, 16: 0, 17: 1, 18: 0, 19: 10}
+    menu = 'w'
     v = 0
-    while v == 0:
+    while menu in "WwRrLlPpVv" and v == 0:
         controle = input("\n\033[34mDigite:\nW - Write\nR - READER"
                          "\nL - READ ALL\nP para executar instruções\n"
                          "V para voltar\n")
@@ -305,18 +314,16 @@ def control(cpu):
         elif (controle == "L") or (controle == "l"):
             cpu.ler_tudo()
         elif (controle == "P") or (controle == "p"):
-            if cpu.cache.ram.memo_ram == memoria:
-                print(f'Dado: {10:016b}')
             cpu.instrucoes()
         elif (controle == "V") or (controle == "v"):
+            v = 1
             start()
 
 
 def start():
-    menu = "w"
-    while menu in "WwRrLlPpVv":
-        b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Aleatorio\nQualquer coisa para acessar o console\n")
-        menu = situacao(b)
+    b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Exemplo 3\n"
+              "4. Aleatorio\nQualquer coisa para acessar o console\n")
+    situacao(b)
 
 
 start()
