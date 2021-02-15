@@ -15,7 +15,7 @@ class Process:
 
     def instrucoes(self):
         self.processador = True
-        while 11 > self.ci != -1:
+        while self.ci != -1:
             self.rem = self.ci
             self.ler()
             self.rem = int(f'{self.rdm:016b}'[8:16], 2)
@@ -65,22 +65,16 @@ class Process:
             else:
                 print("Algo deu erro")
                 self.ci = -1
-            print("R0 atual:", self.r0)
-            print("REM atual:", self.rem)
-            print("RDM atual:", self.rdm)
-            print("RI atual:", self.ri)
-            print("CI atual:", self.ci)
-
-    def ula(self):
-        pass
+            self.ri = 0
 
     def validacao(self):
         endereco = input(f"Digite o endereço de {self.cache.ram.tamanho_linhas} bits: ")
-        while len(str(endereco)) < self.cache.ram.tamanho_linhas:
+        while len(str(endereco)) != self.cache.ram.tamanho_linhas:
             endereco = input(f"Digite o endereço de {self.cache.ram.tamanho_linhas} bits: ")
-        celula = int((input(f"Digite o dado de {self.cache.ram.tamanho_celula} bits: ")), 2)
-        while len(str(celula)) < self.cache.ram.tamanho_celula:
+        celula = input(f"Digite o dado de {self.cache.ram.tamanho_celula} bits: ")
+        while len(str(celula)) != self.cache.ram.tamanho_celula:
             celula = int((input(f"Digite o dado de {self.cache.ram.tamanho_celula} bits: ")), 2)
+        celula = int(celula, 2)
         return endereco, celula
 
     def mani_dados(self, endereco):
@@ -141,19 +135,37 @@ class Process:
     def inscricao(self, endereco, conj, tag, dado, celula=0):
         if type(endereco) == int:
             endereco = f'{endereco:0b}'.zfill(self.cache.ram.tamanho_linhas)
-        if tag not in self.cache.memo_cache[conj]:
-            escolha = choice(list(self.cache.memo_cache[conj].keys()))
-            del (self.cache.memo_cache[conj][escolha])
-            self.cache.memo_cache[conj].update({tag: {}})
-            endereco = int(endereco, 2) >> self.cache.bit_dados
-            endereco = endereco << self.cache.bit_dados
-            endereco = endereco >> self.cache.bit_dados
-            endereco = endereco + (self.cache.dados - 1)
-            for k in reversed(range(self.cache.dados)):
-                self.cache.memo_cache[conj][tag].update({k: self.cache.ram.memo_ram[endereco]})
-                endereco -= 1
-            if not self.processador:
-                self.cache.memo_cache[conj][tag][dado] = celula
+            endereco_att_ram = int(endereco, 2)
+            self.escrita_cache(endereco, endereco_att_ram, conj, tag, dado, celula)
+        else:
+            endereco_att_ram = endereco
+            self.escrita_cache(endereco, endereco_att_ram, conj, tag, dado, celula)
+
+    def escrita_cache(self, endereco, endereco_att_ram, conj, tag, dado, celula):
+        if tag not in self.cache.memo_cache[conj] and not self.processador:
+            self.load_ram_cache(endereco, conj, tag)
+            self.cache.memo_cache[conj][tag][dado] = celula
+            self.cache.ram.memo_ram[endereco_att_ram] = celula
+        elif tag in self.cache.memo_cache[conj] and self.processador and self.ri == 10:
+            self.cache.memo_cache[conj][tag][dado] = celula
+            self.cache.ram.memo_ram[endereco_att_ram] = celula
+        elif tag not in self.cache.memo_cache[conj] and self.processador and self.ri == 10:
+            self.load_ram_cache(endereco, conj, tag)
+            self.cache.memo_cache[conj][tag][dado] = celula
+            self.cache.ram.memo_ram[endereco_att_ram] = celula
+        else:
+            self.load_ram_cache(endereco, conj, tag)
+
+    def load_ram_cache(self, endereco, conj, tag):
+        escolha = choice(list(self.cache.memo_cache[conj].keys()))
+        del (self.cache.memo_cache[conj][escolha])
+        self.cache.memo_cache[conj].update({tag: {}})
+        endereco = int(endereco, 2) >> self.cache.bit_dados
+        endereco = endereco << self.cache.bit_dados
+        endereco = endereco + (self.cache.dados - 1)
+        for k in reversed(range(self.cache.dados)):
+            self.cache.memo_cache[conj][tag].update({k: self.cache.ram.memo_ram[endereco]})
+            endereco -= 1
 
     def memo_cache_escrita(self):
         if not self.processador:
@@ -164,12 +176,12 @@ class Process:
         else:
             if self.ri == 10:
                 p = 0
-                k = [int(f'{self.r0:016b}'[0:8], 2), int(f'{self.r0:016b}'[8:16], 2)]
-                for j in k:
+                celula = [int(f'{self.r0:016b}'[0:8], 2), int(f'{self.r0:016b}'[8:16], 2)]
+                for c in celula:
                     conj, tag, dado = self.mani_dados(self.rem + p)
-                    self.inscricao(self.rem, conj, tag, dado, j)
+                    self.inscricao(self.rem + p, conj, tag, dado, c)
                     p += 1
-
+                print("Dado:", f'{celula[0]:08b}' + f'{celula[1]:08b}')
             else:
                 conj, tag, dado = self.mani_dados(f'{self.rem:0b}'
                                                   .zfill(self.cache.ram.tamanho_linhas))
@@ -255,7 +267,7 @@ class Cache:
 
 def situacao(u):
     if u == 1:
-        memoria = {0: 1, 1: 14, 2: 4, 3: 16, 4: 7, 5: 10, 6: 10, 7: 16, 8: 8, 9: 12,
+        memoria = {0: 1, 1: 14, 2: 4, 3: 16, 4: 7, 5: 10, 6: 10, 7: 14, 8: 8, 9: 12,
                    10: 10, 11: 14, 12: 0, 13: 0, 14: 2, 15: 179, 16: 1, 17: 163}
         ram = Ram(0, 0, memoria)
         cache = Cache(ram)
@@ -263,10 +275,11 @@ def situacao(u):
         control(cpu)
     elif u == 2:
         memoria = {0: 10, 1: 18, 2: 1, 3: 18, 4: 4, 5: 16, 6: 2, 7: 18, 8: 10, 9: 18,
-                   10: 5, 11: 7, 12: 8, 13: 1, 14: 0, 15: 0, 16: 0, 17: 1, 18: 0, 19: 2}
+                   10: 5, 11: 14, 12: 8, 13: 4, 14: 0, 15: 0, 16: 0, 17: 1, 18: 0, 19: 10}
         ram = Ram(0, 0, memoria)
         cache = Cache(ram)
         cpu = Process(cache)
+        cpu.ci = 2
         control(cpu)
     else:
         ram = Ram()
@@ -276,12 +289,13 @@ def situacao(u):
 
 
 def control(cpu):
+    memoria = {0: 10, 1: 18, 2: 1, 3: 18, 4: 4, 5: 16, 6: 2, 7: 18, 8: 10, 9: 18,
+               10: 5, 11: 14, 12: 8, 13: 4, 14: 0, 15: 0, 16: 0, 17: 1, 18: 0, 19: 10}
     v = 0
     while v == 0:
         controle = input("\n\033[34mDigite:\nW - Write\nR - READER"
                          "\nL - READ ALL\nP para executar instruções\n"
                          "V para voltar\nQualquer tecla para acessar o console\n")
-        #controle = "p"
         if (controle == "W") or (controle == "w"):
             cpu.memo_cache_escrita()
         elif (controle == "R") or (controle == "r"):
@@ -289,6 +303,8 @@ def control(cpu):
         elif (controle == "L") or (controle == "l"):
             cpu.ler_tudo()
         elif (controle == "P") or (controle == "p"):
+            if cpu.cache.ram.memo_ram == memoria:
+                print(f'Dado: {10:016b}')
             cpu.instrucoes()
         elif (controle == "V") or (controle == "v"):
             v = 1
@@ -298,8 +314,7 @@ def control(cpu):
 def start():
     menu = "w"
     while menu in "WwRrLlPpVv":
-        # b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Aleatorio\n")
-        b = '1'
+        b = input("\n\033[34mDigite\n1. Exemplo 1\n2. Exemplo 2\n3. Aleatorio\n")
         situacao(int(b))
 
 
